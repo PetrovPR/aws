@@ -34,7 +34,7 @@ public class ProductService {
         prop.load(ip);
 
         AmazonSQS sqs = AmazonSQSClientBuilder.standard()
-                .withRegion("us-east-1")
+                .withRegion("eu-central-1")
                 .withCredentials(new AWSStaticCredentialsProvider(
                         new BasicAWSCredentials(prop.getProperty("user"),
                                 prop.getProperty("password"))))
