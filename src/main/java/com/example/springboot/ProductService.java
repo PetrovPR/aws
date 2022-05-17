@@ -5,6 +5,8 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
+import com.amazonaws.xray.AWSXRay;
+import com.amazonaws.xray.entities.Segment;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
@@ -19,7 +21,16 @@ public class ProductService {
     private HashMap<Integer, Product> personMap = new HashMap<Integer, Product>();
 
     public void addProduct(Product product) {
-        personMap.put(product.getId(), product);
+
+        Segment add_product = AWSXRay.beginSegment("Add Product");
+        try {
+            personMap.put(product.getId(), product);
+        } catch (Exception e ) {
+            add_product.addException(new RuntimeException());
+        } finally {
+            AWSXRay.endSegment();
+        }
+
     }
 
     public Product getProduct(Integer id) {
